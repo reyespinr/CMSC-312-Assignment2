@@ -1,6 +1,6 @@
-# CMSC-312 Assignment 1
+# CMSC-312 Assignment 2
 
-This repository contains a collection of programs demonstrating inter-process communication (IPC) methods, including message queues and socket programming.
+This repository contains a collection of programs that demonstrate different inter-process communication (IPC) methods and multi-threading in C++, focusing on shared memory, semaphores, and process-thread synchronization.
 
 ## Structure
 
@@ -11,8 +11,8 @@ This repository contains a collection of programs demonstrating inter-process co
 
 ### Prerequisites
 
-- CMake (version 3.13 or higher)
-- A C++ compiler supporting C++11 or higher (e.g., g++ or clang)
+- CMake (version 3.16 or higher)
+- A C++ compiler supporting C++20 or higher (e.g., g++ or clang)
 - VSCode (optional, with CMake Tools extension for easy building and running)
 
 ### Using VSCode Extension
@@ -32,35 +32,26 @@ mkdir build && cd build      # Create and enter the build directory
 cmake ..                     # Generate build system files
 cmake --build .              # Compile the project
 ```
-To run an executable, navigate to the build directory and execute the program:
+
+## Running Executables
+After building, executables will be located in the build directory. They can be run with commands like:
 
 ```bash
-./server                     # To run the server program
-./client                     # To run the client program
+./Part1   # For part 1 executable
+./Part2   # For part 2 executable
+./Part3   # For part 3 executable, use with arguments, e.g., ./Part3 5 10
 ```
-Each program can be executed in separate terminal windows. Ensure the server is running before starting the client.
 
-## Programs by Question
+## Programs by Part
 
-- **Question 1: Basic IPC using Shared Memory**
-  - `ProcessA`: Initializes shared memory and waits for B and C processes.
-  - `ProcessB`: Attaches and writes to shared memory managed by Process A.
-  - `ProcessC`: Attaches and writes to shared memory managed by Process A.
+### Part 1: Reader-Writer Problem Using Shared Memory
 
-- **Question 2: Process Forking**
-  - `SeparateForks`: Demonstrates forking separate child processes for B and C from A.
-  - `NestedForks`: Demonstrates nested forking with process C forked from within B.
+- Demonstrates the reader-writer problem using counting semaphores to synchronize access to shared memory.
 
-- **Question 3: Message Queues**
-  - `Spock`: Reads messages from a message queue.
-  - `Kirk`: Writes messages to a message queue.
+### Part 2: Counting Semaphores with Binary Semaphores
 
-- **Question 4: Message Queue Modification**
-  - `NewSpock`: Reads a sequence of numbers from a message queue, sorts them, and prints out.
-  - `NewKirk`: Sends a sequence of numbers to be sorted to `NewSpock`.
+- Implements counting semaphores using binary semaphores and tests them with a custom reader-writer problem.
 
-- **Question 5: Socket Programming**
-  - `Server`: Sorts numbers sent by clients over sockets and prints out sorted numbers.
-  - `Client`: Sends a sequence of numbers to the server to be sorted.
+### Part 3: Multi-Process and Multi-Threaded Implementation
 
-For more detailed instructions on running individual examples, refer to the comments within each source file.
+- Converts writer logic to separate processes and maintains readers as threads, all synchronized using shared memory and semaphores.

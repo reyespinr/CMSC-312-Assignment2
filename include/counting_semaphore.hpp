@@ -11,10 +11,11 @@ public:
   void P();
   void V();
   int get_val() const;
+  void reset(int K);  // Declare the reset method
 
 private:
   int val;
-  std::mutex mutex;
+  mutable std::mutex mutex;  // Make mutex mutable
   std::condition_variable gate;
 };
 
