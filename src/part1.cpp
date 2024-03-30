@@ -1,6 +1,9 @@
+#include <atomic>
 #include <chrono>
 #include <csignal>
+#include <iostream>
 #include <thread>
+#include <vector>
 
 #include "../include/utils.hpp"
 #include "reader_writer.hpp"
@@ -39,6 +42,7 @@ auto test_multiple_readers() -> void
   reader1.join();
   reader2.join();
   assertTest(rw.get_num_reader() == 0, "Reader count did not reset correctly.");
+  std::cout << std::endl;  // Add newline after the readers finish
 }
 
 // Test to ensure writer exclusivity: no readers can read while a writer is writing.
@@ -69,6 +73,7 @@ auto test_writer_exclusivity() -> void
   reader.join();
 
   assertTest(reader_blocked, "Reader was not properly blocked by active writer.");
+  std::cout << std::endl;  // Add newline after the readers finish
 }
 
 // Test to observe reader priority over writers when already reading.
@@ -116,6 +121,7 @@ auto test_reader_priority() -> void
 
   assertTest(!writer_waiting.load(), "Writer did not wait for readers to finish.");
   assertTest(readers_count.load() == 0, "Not all readers finished correctly.");
+  std::cout << std::endl;  // Add newline after the readers finish
 }
 
 // Stress test to observe behavior under a high load of readers and writers.
@@ -146,11 +152,11 @@ auto test_stress_conditions() -> void
     writer.join();
   }
 
-  // After all threads complete, the test simply ends.
-  // In real-world applications, you'd want to check for system stability,
-  // ensure no data corruption, and validate concurrency controls are effective.
-  std::cout << "Stress test completed with " << readers_num << " readers and " << writers_num
-            << " writers.\n";
+  // Output test completion message
+  // std::cout << "Stress test completed with " << readers_num << " readers and " << writers_num
+  //          << " writers." << std::endl;
+  // std::cout << "test_stress_conditions passed." << std::endl;
+  // std::cout << std::endl;  // Ensure clear separation between tests
 }
 
 // Main function to run defined tests
@@ -162,7 +168,7 @@ int main()
   RUN_TEST(test_multiple_readers);
   RUN_TEST(test_writer_exclusivity);
   RUN_TEST(test_reader_priority);
-  RUN_TEST(test_stress_conditions);  // Ensure to call the new tests
+  RUN_TEST(test_stress_conditions);
 
   return 0;
 }

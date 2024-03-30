@@ -2,7 +2,9 @@
 
 #include <atomic>
 #include <chrono>
+#include <iostream>
 #include <limits>
+#include <mutex>  // Add mutex header
 
 ReaderWriter::ReaderWriter(int max_readers)
 : write_semaphore_(1), read_limit_(max_readers), count_(1), num_reader_(0)
@@ -16,9 +18,11 @@ auto ReaderWriter::writer(int writer_number) -> void
   long long current = count_.load();  // Load current value
   if (current <= (std::numeric_limits<long long>::max() / 2)) {
     // We can safely double the count without risking overflow
-    count_.store(current * 2);  // Store the updated value
+    count_.store(current * 2);                      // Store the updated value
+    std::lock_guard<std::mutex> lock(print_mutex);  // Lock the mutex
     std::cout << "Writer " << writer_number << " modified count to " << count_.load() << std::endl;
   } else {
+    std::lock_guard<std::mutex> lock(print_mutex);  // Lock the mutex
     std::cout << "Writer " << writer_number << ": overflow risk, count not doubled." << std::endl;
   }
   write_semaphore_.release();
@@ -34,7 +38,10 @@ void ReaderWriter::reader(int reader_number)
   }
   lock.unlock();
 
-  std::cout << "Reader " << reader_number << ": read count as " << count_.load() << std::endl;
+  {
+    std::lock_guard<std::mutex> lock(print_mutex);  // Lock the mutex
+    std::cout << "Reader " << reader_number << ": read count as " << count_.load() << std::endl;
+  }
 
   if (test_mode) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));

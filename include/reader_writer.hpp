@@ -1,7 +1,7 @@
 #ifndef READER_WRITER_HPP
 #define READER_WRITER_HPP
 
-#include <atomic>  // For atomic operations
+#include <atomic>
 #include <iostream>
 #include <mutex>
 #include <semaphore>
@@ -29,6 +29,7 @@ private:
   std::counting_semaphore<5> read_limit_;
   std::atomic<long long> count_;  // Changed to atomic<long long> to handle large numbers
   int num_reader_;
+  std::mutex print_mutex;  // Mutex for printing
 };
 
 #endif  // READER_WRITER_HPP
